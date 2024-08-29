@@ -1,12 +1,13 @@
-import { HttpBackend, HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
-import { Wso2Token } from '../../models/wso2-token';
-import { StorageService } from './storage.service';
-import { AuthConfig } from '../config/default-config';
-import { ConfigLoaderService } from '../config/auth-config';
-import { OpenIdConfiguration } from '../../models/open-id-configuration';
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { BehaviorSubject } from "rxjs";
+import { AuthConfig } from "../config/default-config";
+import { Wso2Token } from "../../models/wso2-token";
+import { OpenIdConfiguration } from "../../models/open-id-configuration";
+import { StorageService } from "./storage.service";
+import { ConfigService } from "./config.service";
+
 
 @Injectable({
   providedIn: 'root'
@@ -40,9 +41,9 @@ export class LoginService{
     private activatedRoute: ActivatedRoute,
     private httpClient : HttpClient,
     private storageService : StorageService,
-    private configService: ConfigLoaderService) {
+    private configService: ConfigService) {
      
-      this.authConfig = this.configService.getModuleConfiguration()
+      this.authConfig = this.configService.getConfig()
  
       this.postLoginRedirectUri = this.authConfig.postLoginRedirectUri
       this.responseType = this.authConfig.responseType

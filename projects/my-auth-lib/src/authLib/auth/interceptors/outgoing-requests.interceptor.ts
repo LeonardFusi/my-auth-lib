@@ -1,17 +1,12 @@
-import { Injectable, Injector } from '@angular/core';
-import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor,
-} from '@angular/common/http';
-import { Observable, from, lastValueFrom } from 'rxjs';
-import { StorageService } from '../services/storage.service';
-import { RefreshTokenService } from '../services/refresh.service';
-import { Wso2Token } from '../../models/wso2-token';
-import { OpenIdConfiguration } from '../../models/open-id-configuration';
-import { ConfigLoaderService } from '../config/auth-config';
-import { ActiveRefreshService } from '../services/active-refresh.service';
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from "@angular/common/http";
+import { Injectable, Injector } from "@angular/core";
+import { Observable, from, lastValueFrom } from "rxjs";
+import { OpenIdConfiguration } from "../../models/open-id-configuration";
+import { Wso2Token } from "../../models/wso2-token";
+import { ActiveRefreshService } from "../services/active-refresh.service";
+import { RefreshTokenService } from "../services/refresh.service";
+import { StorageService } from "../services/storage.service";
+import { ConfigService } from "../services/config.service";
 
 @Injectable()
 export class OutgoingRequestsInterceptor implements HttpInterceptor {
@@ -30,8 +25,8 @@ export class OutgoingRequestsInterceptor implements HttpInterceptor {
     
     const refreshTokenService : RefreshTokenService = this.injector.get(RefreshTokenService)
     
-    const configLoader : ConfigLoaderService = this.injector.get(ConfigLoaderService) 
-    const authConfig : OpenIdConfiguration =  configLoader.getModuleConfiguration()
+    const configLoader : ConfigService = this.injector.get(ConfigService) 
+    const authConfig : OpenIdConfiguration =  configLoader.getConfig()
   
     const tokenEndpoint : string = authConfig.authWellknownEndpoints!.tokenEndpoint 
     const wso2LogoutURL: string = authConfig.authWellknownEndpoints!.endSessionEndpoint 

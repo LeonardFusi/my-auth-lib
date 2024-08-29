@@ -1,13 +1,13 @@
-import { Injectable, Injector } from '@angular/core';
+import { HttpClient, HttpParams, HttpHeaders } from "@angular/common/http";
+import { Injectable, Injector } from "@angular/core";
+import { take, lastValueFrom } from "rxjs";
+import { AuthConfig } from "../config/default-config";
+import { OpenIdConfiguration } from "../../models/open-id-configuration";
+import { Wso2Token } from "../../models/wso2-token";
+import { LoginService } from "./login.service";
+import { StorageService } from "./storage.service";
+import { ConfigService } from "./config.service";
 
-import { StorageService } from './storage.service';
-import { AuthConfig } from '../config/default-config';
-import { LoginService } from './login.service';
-import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
-import { Wso2Token } from '../../models/wso2-token';
-import { take, lastValueFrom } from 'rxjs';
-import { ConfigLoaderService } from '../config/auth-config';
-import { OpenIdConfiguration } from '../../models/open-id-configuration';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,7 @@ import { OpenIdConfiguration } from '../../models/open-id-configuration';
 export class RefreshTokenService {
   wso2Tokens:string | undefined | null ;
   
-  private configService : ConfigLoaderService;
+  private configService : ConfigService;
   private authConfig : OpenIdConfiguration 
   private isLoggedIn: boolean = false;
   private intervalForSilentRenewChecks: number| undefined;
@@ -27,8 +27,8 @@ export class RefreshTokenService {
     private loginService :LoginService,
     private http : HttpClient) {
       
-      this.configService = injector.get(ConfigLoaderService)
-      this.authConfig = this.configService.getModuleConfiguration()
+      this.configService = injector.get(ConfigService)
+      this.authConfig = this.configService.getConfig()
       this.tokenEndpoint = this.authConfig.authWellknownEndpoints!.tokenEndpoint
 
       this.loginService.checkAuth().subscribe(loginInfo =>{

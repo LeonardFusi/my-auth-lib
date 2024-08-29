@@ -4,8 +4,6 @@
 export * from './authLib/auth/components/logout-callback-wso2/logout-callback-wso2.component';
 export * from './authLib/auth/components/login-callback-wso2/login-callback-wso2.component';
 
-export * from './authLib/auth/config/auth-config'
-
 export * from './authLib/auth/guards/auth.guard'
 export * from './authLib/auth/guards/auth.service'
 

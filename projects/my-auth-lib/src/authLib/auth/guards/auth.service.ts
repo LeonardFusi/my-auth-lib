@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
+import { LoginService } from "../services/login.service";
+import { RefreshTokenService } from "../services/refresh.service";
+import { StorageService } from "../services/storage.service";
 
-import { LoginService } from '../services/login.service';
-import { StorageService } from '../services/storage.service';
-import { RefreshTokenService } from '../services/refresh.service';
 
 @Injectable({
   providedIn: 'root'

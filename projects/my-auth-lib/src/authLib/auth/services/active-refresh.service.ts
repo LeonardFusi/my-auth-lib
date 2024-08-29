@@ -1,11 +1,12 @@
-import { Injectable, Injector } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { TimeoutService } from './timeout.service';
-import { ErrorService } from './error.service';
-import { RefreshTokenService } from './refresh.service';
-import { Wso2Token } from '../../models/wso2-token';
-import { ConfigLoaderService } from '../config/auth-config';
-import { OpenIdConfiguration } from '../../models/open-id-configuration';
+import { Injectable, Injector } from "@angular/core";
+import { BehaviorSubject } from "rxjs";
+import { OpenIdConfiguration } from "../../models/open-id-configuration";
+import { Wso2Token } from "../../models/wso2-token";
+import { ErrorService } from "./error.service";
+import { RefreshTokenService } from "./refresh.service";
+import { TimeoutService } from "./timeout.service";
+import { ConfigService } from "./config.service";
+
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,6 @@ export class ActiveRefreshService {
 
   private emitChangeSource = new BehaviorSubject<boolean>(false);
   changeEmitted$ = this.emitChangeSource.asObservable()
-  private configService : ConfigLoaderService;
 
   private wso2Token : Wso2Token | undefined;
   
@@ -28,8 +28,8 @@ export class ActiveRefreshService {
     private refreshTokenService : RefreshTokenService
   ) 
   { 
-    this.configService = injector.get(ConfigLoaderService)
-    const authConfig : OpenIdConfiguration = this.configService.getModuleConfiguration()
+    const configLoader : ConfigService = this.injector.get(ConfigService) 
+    const authConfig : OpenIdConfiguration =  configLoader.getConfig()
     const tokenEndpoint : string = authConfig.authWellknownEndpoints!.tokenEndpoint
   }
 

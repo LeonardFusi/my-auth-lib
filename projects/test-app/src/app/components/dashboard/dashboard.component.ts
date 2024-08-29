@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
-import { BinService } from 'src/app/services/bin.service';
-import { LogoutService } from '../../auth/services/logout.service';
+import { BinService } from '../../services/bin.service';
+import { LogoutService } from 'my-auth-lib';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  styleUrls: ['./dashboard.component.css'],
+  standalone: true,
+  imports: []
 })
 export class DashboardComponent {
 

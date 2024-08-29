@@ -1,15 +1,10 @@
-import { Injectable, Injector } from '@angular/core';
-import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor,
-  HttpParams,
-} from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { StorageService } from '../services/storage.service';
-import { OpenIdConfiguration } from '../../models/open-id-configuration';
-import { ConfigLoaderService } from '../config/auth-config';
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpParams } from "@angular/common/http";
+import { Injectable, Injector } from "@angular/core";
+import { Observable } from "rxjs";
+import { OpenIdConfiguration } from "../../models/open-id-configuration";
+import { StorageService } from "../services/storage.service";
+import { ConfigService } from "../services/config.service";
+
 
 @Injectable()
 export class TokenRefreshInterceptor implements HttpInterceptor {
@@ -27,8 +22,8 @@ export class TokenRefreshInterceptor implements HttpInterceptor {
   
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     
-    const configLoader : ConfigLoaderService = this.injector.get(ConfigLoaderService)
-    const authConfig : OpenIdConfiguration = configLoader.getModuleConfiguration()
+    const configLoader : ConfigService = this.injector.get(ConfigService) 
+    const authConfig : OpenIdConfiguration =  configLoader.getConfig()
     const tokenEndpoint: string = authConfig.authWellknownEndpoints!.tokenEndpoint;
     const clientId : string = authConfig.clientId;
     if(request.url == tokenEndpoint){

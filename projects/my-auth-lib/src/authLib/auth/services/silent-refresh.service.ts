@@ -1,9 +1,10 @@
-import { Injectable} from '@angular/core';
-import { LoginService } from './login.service';
-import { TimeoutService } from './timeout.service';
-import { ErrorService } from './error.service';
-import { Wso2Token } from '../../models/wso2-token';
-import { RefreshTokenService } from './refresh.service';
+import { Injectable } from "@angular/core";
+import { Wso2Token } from "../../models/wso2-token";
+import { ErrorService } from "./error.service";
+import { LoginService } from "./login.service";
+import { RefreshTokenService } from "./refresh.service";
+import { TimeoutService } from "./timeout.service";
+
 
 @Injectable({
   providedIn: 'root'

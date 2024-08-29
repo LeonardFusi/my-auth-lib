@@ -1,11 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoginService } from 'my-auth-lib';
-
 @Component({
   selector: 'app-welcome',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
+  standalone: true,
+  imports: []
 })
 export class LoginComponent implements OnInit{
   @Input() isLoggedIn : boolean = false

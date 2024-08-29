@@ -1,17 +1,18 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { LoginService } from './login.service';
-import { StorageService } from './storage.service';
-import { AuthConfig } from '../config/default-config';
-import { ConfigLoaderService } from '../config/auth-config';
-import { OpenIdConfiguration } from '../../models/open-id-configuration';
+import { HttpClient, HttpParams, HttpHeaders } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { AuthConfig } from "../config/default-config";
+import { OpenIdConfiguration } from "../../models/open-id-configuration";
+import { LoginService } from "./login.service";
+import { StorageService } from "./storage.service";
+import { ConfigService } from "./config.service";
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class LogoutService {
-  private authConfig : OpenIdConfiguration = this.configLoader.getModuleConfiguration()
+  private authConfig : OpenIdConfiguration = this.configLoader.getConfig()
 
   private oAuthLogoutUri: string = this.authConfig.authWellknownEndpoints!.endSessionEndpoint;
   private originUrl: string = window.location.origin;
@@ -26,7 +27,7 @@ export class LogoutService {
     private http: HttpClient,
     private storageService : StorageService,
     private loginService : LoginService,
-    private configLoader : ConfigLoaderService
+    private configLoader : ConfigService
   ) { }
 
   propagateLogout(){
