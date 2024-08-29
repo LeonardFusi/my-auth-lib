@@ -1,0 +1,9 @@
+<div>Welcome to home Route</div>
+
+
+<button *ngIf="isLoggedIn" (click)="toDashBoard()" id="dashboard">To DashBoard</button>
+<button *ngIf="isLoggedIn" (click)="onClickLogout()" id="logout">Logout</button>
+
+
+<button *ngIf="!isLoggedIn" (click)="toLogin()" id="login">To Login</button>
+
