@@ -1,62 +1,64 @@
-import { Injectable } from "@angular/core";
+import { Injectable, Inject, PLATFORM_ID } from "@angular/core";
+import { isPlatformBrowser } from "@angular/common";
 import { LoginService } from "../services/login.service";
 import { RefreshTokenService } from "../services/refresh.service";
 import { StorageService } from "../services/storage.service";
-
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor(private storageService : StorageService,
-    private loginService : LoginService,
-    private refreshTokenService : RefreshTokenService){}
+  private appBaseUrl!: string;
+  private isBrowser: boolean;
 
-  isLoggedIn = false
-  isAdmin = true
+  constructor(
+    private storageService: StorageService,
+    private loginService: LoginService,
+    private refreshTokenService: RefreshTokenService,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) { 
+    this.isBrowser = isPlatformBrowser(platformId);
+    if (this.isBrowser) {
+      this.appBaseUrl = window.location.origin;
+    }
+  }
+
+  isLoggedIn = false;
+  isAdmin = true;
   wso2Tokens: string | null | undefined;
 
-  isAutenticated(){
-    return this.isLoggedIn
+  isAuthenticated() {
+    return this.isLoggedIn;
   }
 
-  async setAuthentication() : Promise<boolean>{
-   
-    if(this.storageService.isTokenSetPresentInLocalStorage()){
-      if(!this.refreshTokenService.refreshTokenChecks()){
-        return this.isLoggedIn = true
+  async setAuthentication(): Promise<boolean> {
+    if (this.isBrowser && this.storageService.isTokenSetPresentInLocalStorage()) {
+      if (!this.refreshTokenService.refreshTokenChecks()) {
+        this.isLoggedIn = true;
+        return this.isLoggedIn;
       } else {
-          var callSuccesfull = this.refreshTokenService.asyncRefreshTokenCall()
-          callSuccesfull.then(wso2Tokens =>{
-            /* console.log(wso2Tokens); */
-            
-            if(wso2Tokens){
-              this.refreshTokenService.storeNewTokenSet(wso2Tokens)
-              return this.isLoggedIn = true
-            } else{
-              return this.isLoggedIn
-            }
-          })
+        const callSuccessful = await this.refreshTokenService.asyncRefreshTokenCall();
+        if (callSuccessful) {
+          this.refreshTokenService.storeNewTokenSet(callSuccessful);
+          this.isLoggedIn = true;
+        }
       }
     }
-    return this.isLoggedIn
+    return this.isLoggedIn;
   }
 
-  checkAuthentication(){
-    
-    if(this.isAutenticated()){
-      
-      return true
-    }
-    else {
-      this.storageService.clearLocalStorage()
-      this.storageService.clearSessionStorage()
-      this.loginService.setOriginURL( window.location.href);
-      this.loginService.toLoginPageRedirection()
-      return false 
+  checkAuthentication() {
+    if (this.isAuthenticated()) {
+      return true;
+    } else {
+      if (this.isBrowser) {
+        this.storageService.clearLocalStorage();
+        this.storageService.clearSessionStorage();
+        this.loginService.setOriginURL(this.appBaseUrl);
+        this.loginService.toLoginPageRedirection();
+      }
+      return false;
     }
   }
-
-  
 }
