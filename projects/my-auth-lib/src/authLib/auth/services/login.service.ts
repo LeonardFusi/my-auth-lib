@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { afterNextRender, Injectable } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { BehaviorSubject } from "rxjs";
 import { AuthConfig } from "../config/default-config";
@@ -17,10 +17,9 @@ export class LoginService{
   private emitChangeSource = new BehaviorSubject<boolean>(false);
   private changeEmitted$ = this.emitChangeSource.asObservable()
 
-  public wso2Token!: Wso2Token;
-  private appBaseUrl : string = window.location.origin
-  private originUrl: string| undefined = this.appBaseUrl;
-
+  public wso2Token!: Wso2Token
+  private appBaseUrl!: string;
+  private originUrl: string| undefined;
   public queryParamCode = 'code'
 
   private authConfig : OpenIdConfiguration
@@ -54,10 +53,14 @@ export class LoginService{
 
       if(this.storageService.isTokenSetPresentInLocalStorage()){
         if(!this.storageService.getTokenSetFromSessionStorage()){
-          this.storageService.allignTokenSetInSessionToLocal()
+          this.storageService.alignTokenSetInSessionToLocal()
         }
         this.propagateLogInfo(true) 
       }   
+      afterNextRender(() => {
+        this.appBaseUrl = window.location.origin;
+        this.originUrl =  this.appBaseUrl;
+      })
     }
 
 
@@ -223,7 +226,7 @@ private getRedirectUri(originUrl: string): string {
     this.storageService.setTokenSetInSessionStorage(wso2Token)
     let sessionWso2Tokens = this.storageService.getTokenSetFromSessionStorage()
     if(sessionWso2Tokens){
-      this.storageService.allignTokenSetInLocalToSession()
+      this.storageService.alignTokenSetInLocalToSession()
     }
     /* console.log(sessionWso2Tokens); */
     

@@ -1,5 +1,5 @@
 import { HttpClient, HttpParams, HttpHeaders } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { afterNextRender, Injectable } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AuthConfig } from "../config/default-config";
 import { OpenIdConfiguration } from "../../models/open-id-configuration";
@@ -15,7 +15,7 @@ export class LogoutService {
   private authConfig : OpenIdConfiguration = this.configLoader.getConfig()
 
   private oAuthLogoutUri: string = this.authConfig.authWellknownEndpoints!.endSessionEndpoint;
-  private originUrl: string = window.location.origin;
+  private originUrl!: string;
   private postLogoutRedirectUri: string | undefined = this.authConfig.postLogoutRedirectUri;
   private logoutCallbackUri: string = AuthConfig.logoutCallbackUri!;
   private revokeEndpoint :string = this.authConfig.authWellknownEndpoints!.revokeEndpoint 
@@ -28,7 +28,12 @@ export class LogoutService {
     private storageService : StorageService,
     private loginService : LoginService,
     private configLoader : ConfigService
-  ) { }
+  ) { 
+    afterNextRender(() => {
+      this.originUrl = window.location.origin;
+      console.log(this.originUrl);
+    })
+  }
 
   propagateLogout(){
     
@@ -150,7 +155,7 @@ private getRedirectUri(originUrl: string): string {
       })
     }
     let body = new URLSearchParams();
-    if(this.storageService.isTokenSetAllignedInStorages()){
+    if(this.storageService.isTokenSetAlignedInStorages()){
       let tokenSet = this.storageService.getTokenSetFromSessionStorage()
       let tokenSetJson = JSON.parse(tokenSet!)
       var access_token = tokenSetJson.access_token
@@ -188,7 +193,7 @@ private getRedirectUri(originUrl: string): string {
       })
     }
     let body = new URLSearchParams();
-    if(this.storageService.isTokenSetAllignedInStorages()){
+    if(this.storageService.isTokenSetAlignedInStorages()){
       let tokenSet = this.storageService.getTokenSetFromSessionStorage()
       let tokenSetJson = JSON.parse(tokenSet!)
       var refresh_token = tokenSetJson.refresh_token
