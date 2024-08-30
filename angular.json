@@ -62,10 +62,8 @@
             ],
             "scripts": [],
             "server": "projects/test-app/src/main.server.ts",
-            "prerender": true,
-            "ssr": {
-              "entry": "projects/test-app/server.ts"
-            }
+            "prerender": false,
+            "ssr": false 
           },
           "configurations": {
             "production": {
