@@ -1,9 +1,7 @@
-import { Injectable, Inject, InjectionToken } from "@angular/core";
+import { Injectable, Inject } from "@angular/core";
 import { OpenIdConfiguration } from "../../models/open-id-configuration";
 import { HttpClient } from "@angular/common/http";
-import { tap } from "rxjs";
-
-export const LIBRARY_CONFIG = new InjectionToken<any>('library.config');
+import { AuthConfig } from "../config/default-config";
  
 @Injectable({
   providedIn: 'root'
@@ -14,17 +12,19 @@ export class ConfigService {
   private auth_config!: OpenIdConfiguration;
 
 
-  constructor(private http: HttpClient, @Inject('CONFIG_FILE_PATH') private configFilePath: string) {}
-
-  loadConfig(): void {
-    this.http.get<OpenIdConfiguration>(this.configFilePath).pipe(
-      tap(config => {
-        console.log(config);
+  constructor(private http: HttpClient, @Inject('CONFIG') private config: OpenIdConfiguration) {
+    if(config){
+      this.auth_config = config;
+     if(!this.auth_config.timeoutFactor && !this.auth_config.renewTimeBeforeTokenExpiresInMilliseconds){
+        this.auth_config.timeoutFactor = AuthConfig.timeoutFactor;
+      }
+      console.log( this.auth_config);
         
-        this.auth_config = config;
-      })
-    ).subscribe();
+    }else{
+      console.log('something wrong');
+    }
   }
+  
 
   getConfig(): OpenIdConfiguration{
     return this.auth_config;

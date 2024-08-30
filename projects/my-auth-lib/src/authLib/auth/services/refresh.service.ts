@@ -54,12 +54,8 @@ export class RefreshTokenService {
       return 2;
     }
     //se sono stati settati entrmbi prendo la percentuale 
-    else if(this.authConfig.renewTimeBeforeTokenExpiresInMilliseconds && this.authConfig.timeoutFactor){
+    else {
       return 3;
-    }
-    //non è stata inserita alcuna configurazione 
-    else{
-      return 4;
     }
   }
 
@@ -84,8 +80,6 @@ export class RefreshTokenService {
         timeoutFactorInPercentageOnAccessTokenLifeSpan = this.authConfig.timeoutFactor;
         limitOnLifeSpanOfTokenInMs = undefined;
         break;
-      case 4:
-        timeoutFactorInPercentageOnAccessTokenLifeSpan = AuthConfig.timeoutFactor
     }
 
     let tokenSet = this.storageService.getTokenSetFromSessionStorage()

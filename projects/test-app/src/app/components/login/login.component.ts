@@ -9,7 +9,7 @@ import { LoginService } from 'my-auth-lib';
   imports: []
 })
 export class LoginComponent implements OnInit{
-  @Input() isLoggedIn : boolean = false
+   @Input() isLoggedIn : boolean = false
 
   constructor(private loginService : LoginService, private router : Router) 
   {
@@ -30,6 +30,6 @@ export class LoginComponent implements OnInit{
 
   login(){
     this.loginService.toLoginPageRedirection()
-  }
+  } 
   
 }
