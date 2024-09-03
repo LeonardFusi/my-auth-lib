@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
-import { LoginService, OidcAuthModule, SilentRefreshService } from 'my-auth-lib';
+import { LoginService, OidcAuthModule, SilentRefreshService, UserService } from 'my-auth-lib';
 
 @Component({
   selector: 'app-root',
@@ -17,12 +17,14 @@ export class AppComponent implements OnInit{
 
   constructor(
     private loginService: LoginService,
-    private silentRefreshService : SilentRefreshService){
-     
+    private silentRefreshService : SilentRefreshService,
+    private userService: UserService){
+      console.log(this.userService.getUserInfo());
+    
     } 
 
   ngOnInit(){
-
+   
   }
   
     
