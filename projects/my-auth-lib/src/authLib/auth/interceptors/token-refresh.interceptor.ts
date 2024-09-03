@@ -44,12 +44,12 @@ export class TokenRefreshInterceptor implements HttpInterceptor {
 
     
       /* console.log("Inside Refresh Interceptor") */
-      if(this.storageService.isTokenSetAllignedInStorages()){
+      if(this.storageService.isTokenSetAlignedInStorages()){
         this.accessToken = wso2TokensJson.access_token
         this.idToken= wso2TokensJson.id_token
         this.refreshToken= wso2TokensJson.refresh_token   
       }else if(localStorageWso2Tokens) {  
-        this.storageService.allignTokenSetInSessionToLocal()
+        this.storageService.alignTokenSetInSessionToLocal()
         this.sessionWso2Tokens = this.storageService.getTokenSetFromSessionStorage()
         var newWso2TokensJson = JSON.parse(this.sessionWso2Tokens!)
         this.accessToken = newWso2TokensJson.access_token

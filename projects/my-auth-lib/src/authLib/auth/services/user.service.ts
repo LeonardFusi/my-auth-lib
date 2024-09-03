@@ -1,19 +1,26 @@
-import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { ConfigService } from "./config.service";
-
+import { jwtDecode } from "jwt-decode";
+import { StorageService } from "./storage.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  private authConfig = this.configService.getConfig()
+  public $userData: any;
 
-  constructor( private http: HttpClient,
-    private configService: ConfigService) { }
+  constructor( private storageService: StorageService) {}
 
     getUserInfo(){
-      return this.http.get<any>(this.authConfig.authWellknownEndpoints!.userInfoEndpoint)
+      try{
+        const tokenSet = this.storageService.getTokenSetFromSessionStorage()!;
+        console.log(tokenSet);
+        this.$userData = jwtDecode(JSON.parse(tokenSet).id_token);
+        console.log(this.$userData);
+        return this.$userData; 
+      } catch(e){
+        let result = (e as Error).message;
+        console.log(result);
+      }
     }
 }

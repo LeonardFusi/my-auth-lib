@@ -1,7 +1,6 @@
 import { HttpClient, HttpParams, HttpHeaders } from "@angular/common/http";
 import { Injectable, Injector } from "@angular/core";
 import { take, lastValueFrom } from "rxjs";
-import { AuthConfig } from "../config/default-config";
 import { OpenIdConfiguration } from "../../models/open-id-configuration";
 import { Wso2Token } from "../../models/wso2-token";
 import { LoginService } from "./login.service";
@@ -104,8 +103,8 @@ export class RefreshTokenService {
     var isActiveRenewNeeded : boolean = false;
 
   
-    if(!this.storageService.isTokenSetAllignedInStorages()){
-      this.storageService.allignTokenSetInSessionToLocal();
+    if(!this.storageService.isTokenSetAlignedInStorages()){
+      this.storageService.alignTokenSetInSessionToLocal();
     }
     this.wso2Tokens = this.storageService.getTokenSetFromSessionStorage()
     if(this.wso2Tokens){
@@ -148,7 +147,7 @@ export class RefreshTokenService {
   }
   storeNewTokenSet(wso2TokenSet : Wso2Token){
     this.storageService.setTokenSetInSessionStorage(wso2TokenSet)
-    this.storageService.allignTokenSetInLocalToSession()
+    this.storageService.alignTokenSetInLocalToSession()
   }
 
 }

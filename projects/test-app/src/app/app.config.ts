@@ -2,13 +2,14 @@ import { ApplicationConfig, importProvidersFrom } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { AppRoutingModule } from "./app-routing.module";
 import { OidcAuthModule } from "my-auth-lib";
+import { provideHttpClient, withFetch } from "@angular/common/http";
 
 
 
 
 export const appConfig: ApplicationConfig = {
   providers: [
-   
+    provideHttpClient(withFetch()),
     importProvidersFrom(
       BrowserModule,
       AppRoutingModule,

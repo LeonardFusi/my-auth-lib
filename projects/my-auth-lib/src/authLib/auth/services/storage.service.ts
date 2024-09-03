@@ -1,153 +1,193 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Wso2Token } from '../../models/wso2-token';
-
 
 @Injectable({
   providedIn: 'root'
 })
-export class StorageService{
-
+export class StorageService {
 
   private keyInStoragesForTokens = 'wso2Tokens';
+  private isBrowser: boolean;
 
-  readLocalStorageItem(key: string) { 
-    return localStorage.getItem(key);
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+    this.isBrowser = isPlatformBrowser(platformId);
   }
 
-  writeLocalStorage(key: string, value :string): void {
-    localStorage.setItem(key,value);
+  // LocalStorage Methods
+
+  readLocalStorageItem(key: string): string | null {
+    if (this.isBrowser) {
+      return localStorage.getItem(key);
+    }
+    return null; // Fallback for SSR
+  }
+
+  writeLocalStorage(key: string, value: string): void {
+    if (this.isBrowser) {
+      localStorage.setItem(key, value);
+    }
   }
 
   removeLocalStorage(key: string): void {
-    localStorage.removeItem(key);
+    if (this.isBrowser) {
+      localStorage.removeItem(key);
+    }
   }
 
   clearLocalStorage(): void {
-    localStorage.clear()
-  }
-  readSessionStorageItem(key: string) { 
-    return sessionStorage.getItem(key);
+    if (this.isBrowser) {
+      localStorage.clear();
+    }
   }
 
-  writeSessionStorage(key: string, value :string): void {
-    sessionStorage.setItem(key,value);
+  // SessionStorage Methods
+
+  readSessionStorageItem(key: string): string | null {
+    if (this.isBrowser) {
+      return sessionStorage.getItem(key);
+    }
+    return null; // Fallback for SSR
+  }
+
+  writeSessionStorage(key: string, value: string): void {
+    if (this.isBrowser) {
+      sessionStorage.setItem(key, value);
+    }
   }
 
   removeSessionStorage(key: string): void {
-    sessionStorage.removeItem(key);
+    if (this.isBrowser) {
+      sessionStorage.removeItem(key);
+    }
   }
 
   clearSessionStorage(): void {
-    sessionStorage.clear()
-  }
- 
-  allignSessionToLocal(key : string){
-    /* console.log("Storages allignment start") */
-    let value = localStorage.getItem(key)
-    if( value){
-      sessionStorage.setItem(key, value)
-      
+    if (this.isBrowser) {
+      sessionStorage.clear();
     }
-    /* console.log("Storages allignment finished") */
   }
 
-  allignLocalToSession(key : string){
-    /* console.log("Storages allignment start") */
-    let value = sessionStorage.getItem(key)
-    if( value){
-      localStorage.setItem(key, value)
-    }
-    /* console.log("Storages allignment finished") */
-  } 
+  // Alignment Methods
 
-  isItemAllignedInStorages(key : string) : boolean{
-    let valueSession = sessionStorage.getItem(key)
-    let valueLocal = localStorage.getItem(key)
-    if(valueSession && valueLocal){
-      if(valueSession == valueLocal){
-        return true
+  alignSessionToLocal(key: string): void {
+    if (this.isBrowser) {
+      const value = localStorage.getItem(key);
+      if (value) {
+        sessionStorage.setItem(key, value);
       }
-      return false
     }
-    return false
   }
 
-  isTokenSetPresentInSessionStorage(){
-    if(sessionStorage.getItem(this.keyInStoragesForTokens) == null){
-      return false
-    }
-    return true
-  }
-  isTokenSetPresentInLocalStorage(){
-    if(localStorage.getItem(this.keyInStoragesForTokens) == null){
-      return false
-    }
-    return true
-  }
-
-  getTokenSetFromSessionStorage(){
-    return sessionStorage.getItem(this.keyInStoragesForTokens);
-  }
-  getTokenSetFromLocalStorage(){
-    return localStorage.getItem(this.keyInStoragesForTokens);
-  }
-  isTokenSetAllignedInStorages() : boolean{
-    let valueSession = sessionStorage.getItem(this.keyInStoragesForTokens)
-    let valueLocal = localStorage.getItem(this.keyInStoragesForTokens)
-    if(valueSession && valueLocal){
-      if(valueSession == valueLocal){
-        return true
+  alignLocalToSession(key: string): void {
+    if (this.isBrowser) {
+      const value = sessionStorage.getItem(key);
+      if (value) {
+        localStorage.setItem(key, value);
       }
-      return false
     }
-    return false
   }
 
-  allignTokenSetInSessionToLocal(){
-    /* console.log("Storages allignment start") */
-    let value = localStorage.getItem(this.keyInStoragesForTokens)
-    if( value){
-      sessionStorage.setItem(this.keyInStoragesForTokens, value)
-      
+  isItemAlignedInStorages(key: string): boolean {
+    if (this.isBrowser) {
+      const valueSession = sessionStorage.getItem(key);
+      const valueLocal = localStorage.getItem(key);
+      return valueSession === valueLocal;
     }
-    /* console.log("Storages allignment finished") */
+    return false; // Fallback for SSR
   }
 
-  allignTokenSetInLocalToSession(){
-    /* console.log("Storages allignment start") */
-    let value = sessionStorage.getItem(this.keyInStoragesForTokens)
-    if( value){
-      localStorage.setItem(this.keyInStoragesForTokens, value)
+  // Token Methods
+
+  isTokenSetPresentInSessionStorage(): boolean {
+    if (this.isBrowser) {
+      return sessionStorage.getItem(this.keyInStoragesForTokens) !== null;
     }
-    /* console.log("Storages allignment finished") */
+    return false; // Fallback for SSR
   }
 
-  isKeyValuePairPresentInSessionStorage(key: string){
-    
-    if(sessionStorage.getItem(key) == null){
-      return false
+  isTokenSetPresentInLocalStorage(): boolean {
+    if (this.isBrowser) {
+      return localStorage.getItem(this.keyInStoragesForTokens) !== null;
     }
-    return true
+    return false; // Fallback for SSR
   }
 
-  isKeyValuePairPresentInLocalStorage(key: string){
-    if(localStorage.getItem(key) == null){
-      return false
+  getTokenSetFromSessionStorage(): string | null {
+    if (this.isBrowser) {
+      return sessionStorage.getItem(this.keyInStoragesForTokens);
     }
-    return true
+    return null; // Fallback for SSR
   }
 
-
-  setTokenSetInSessionStorage( wso2TokenSet :Wso2Token): void {
-    let expires_at = Number(Date.now())+(Number(wso2TokenSet.expires_in)*1000)
-    var value : string = '{"access_token" : '+'"'+wso2TokenSet.access_token+'"'+', "refresh_token" : '+'"'+wso2TokenSet.refresh_token+'"'+', "id_token" : '+'"'+wso2TokenSet.id_token+'"'+', "expires_in" : '+Number(wso2TokenSet.expires_in)*1000+', "expires_at" : '+expires_at+'}'
-
-    sessionStorage.setItem(this.keyInStoragesForTokens,value);
-  }
-  setTokenSetInLocalStorage( value :string): void {
-    localStorage.setItem(this.keyInStoragesForTokens,value);
+  getTokenSetFromLocalStorage(): string | null {
+    if (this.isBrowser) {
+      return localStorage.getItem(this.keyInStoragesForTokens);
+    }
+    return null; // Fallback for SSR
   }
 
+  isTokenSetAlignedInStorages(): boolean {
+    if (this.isBrowser) {
+      const valueSession = sessionStorage.getItem(this.keyInStoragesForTokens);
+      const valueLocal = localStorage.getItem(this.keyInStoragesForTokens);
+      return valueSession === valueLocal;
+    }
+    return false; // Fallback for SSR
+  }
 
+  alignTokenSetInSessionToLocal(): void {
+    if (this.isBrowser) {
+      const value = localStorage.getItem(this.keyInStoragesForTokens);
+      if (value) {
+        sessionStorage.setItem(this.keyInStoragesForTokens, value);
+      }
+    }
+  }
 
+  alignTokenSetInLocalToSession(): void {
+    if (this.isBrowser) {
+      const value = sessionStorage.getItem(this.keyInStoragesForTokens);
+      if (value) {
+        localStorage.setItem(this.keyInStoragesForTokens, value);
+      }
+    }
+  }
+
+  // General Key-Value Methods
+
+  isKeyValuePairPresentInSessionStorage(key: string): boolean {
+    if (this.isBrowser) {
+      return sessionStorage.getItem(key) !== null;
+    }
+    return false; // Fallback for SSR
+  }
+
+  isKeyValuePairPresentInLocalStorage(key: string): boolean {
+    if (this.isBrowser) {
+      return localStorage.getItem(key) !== null;
+    }
+    return false; // Fallback for SSR
+  }
+
+  setTokenSetInSessionStorage(wso2TokenSet: Wso2Token): void {
+    if (this.isBrowser) {
+      const expires_at = Number(Date.now()) + (Number(wso2TokenSet.expires_in) * 1000);
+      const value: string = JSON.stringify({
+        access_token: wso2TokenSet.access_token,
+        refresh_token: wso2TokenSet.refresh_token,
+        id_token: wso2TokenSet.id_token,
+        expires_in: Number(wso2TokenSet.expires_in) * 1000,
+        expires_at: expires_at
+      });
+
+      sessionStorage.setItem(this.keyInStoragesForTokens, value);
+    }
+  }
+
+  setTokenSetInLocalStorage(value: string): void {
+    if (this.isBrowser) {
+      localStorage.setItem(this.keyInStoragesForTokens, value);
+    }
+  }
 }

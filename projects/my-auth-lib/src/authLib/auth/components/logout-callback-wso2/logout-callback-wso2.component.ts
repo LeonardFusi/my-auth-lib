@@ -12,7 +12,7 @@ export class LogoutCallbackWSO2Component {
   constructor(private logoutService: LogoutService){}
 
   ngOnInit(): void {
-    this.logoutService.redirectionURLChek();
+    this.logoutService.redirectionURLCheck();
   }
 
 }

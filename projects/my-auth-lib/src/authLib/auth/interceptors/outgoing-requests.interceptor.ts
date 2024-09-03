@@ -110,7 +110,7 @@ export class OutgoingRequestsInterceptor implements HttpInterceptor {
     if(!this.storageService.isTokenSetPresentInSessionStorage()){
       throw new Error('Auth Token Set could not be store in Session Storage');
     }
-    if(!this.storageService.isTokenSetAllignedInStorages()){
+    if(!this.storageService.isTokenSetAlignedInStorages()){
       throw new Error('Storages could not be alligned');
     }
     
